@@ -4,14 +4,17 @@ const timerDisplay = document.querySelector(".displayTimeLeft");
 const playbtn = document.querySelector(".playButton");
 const pausebtn = document.querySelector(".pauseButton");
 const clearbtn = document.querySelector(".clearButton");
-
+const submitform = document.querySelector("#submit");
+const checkAlert = document.querySelector("#addAlert");
+const checkAlarm = document.querySelector('#addAlarm');
+const alarm = document.querySelector(".alarmSound");
 let isPaused = false;
 
 
 
 
-
 const timer = (seconds) => {
+    clearInterval(countdown);
     const now = Date.now();
     let then = now + seconds * 1000;
     displayTimeLeft(seconds);
@@ -21,7 +24,13 @@ const timer = (seconds) => {
         if (!isPaused) {
             const secondsLeft = Math.round((then - Date.now()) / 1000);
             if (secondsLeft <= 0) {
-                displayTimeLeft(0)
+                displayTimeLeft(0);
+                if (checkAlarm.checked) {
+                    alarm.play();
+                }
+                if (checkAlert.checked) {
+                    alert('The Timer is over');
+                }
                 clearInterval(countdown);
                 return;
             }
@@ -48,6 +57,17 @@ const displayTimeLeft = (seconds) => {
 //     endtime.textContent = `${hour}:${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds} `;
 // }
 
+
+submitform.addEventListener('submit', function (e) {
+    e.preventDefault();
+    const min = this.minutes.value;
+    timer(min * 60);
+    this.reset();
+})
+
+
+
+
 pausebtn.addEventListener('click', function () {
     isPaused = true;
 })
@@ -58,3 +78,4 @@ clearbtn.addEventListener('click', function () {
     clearInterval(countdown);
     timerDisplay.textContent = "00:00"
 })
+
